@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  ny_taxi_db:
+    image: postgres
+    environment:
+      POSTGRES_DB: ny_taxi
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+    ports:
+      - '5431:5432'
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - pipeline_net
+
+  jupyter_nb:
+    image: jupyter/minimal-notebook
+    ports:
+      - '8888:8888'
+    volumes:
+      - ./notebooks:/home/jovyan/work
+    depends_on:
+      - ny_taxi_db
+    environment:
+      PGHOST: ny_taxi_db
+      PGDATABASE: ny_taxi
+      PGUSER: root
+      PGPASSWORD: secret
+    networks:
+      - pipeline_net
+
+  pg_admin:
+    image: dpage/pgadmin4
+    ports:
+      - '8080:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: secret
+    networks:
+      - pipeline_net
+
+  # data_ingest:
+  #   image: data_ingest:v001
+  #   networks:
+  #     - pipeline_net
+
+networks:
+  pipeline_net:

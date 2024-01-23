@@ -1,0 +1,8 @@
+docker run -d \
+  --name ny_taxi_db \
+  -e POSTGRES_USER=root \
+  -e POSTGRES_PASSWORD=root \
+  -e POSTGRES_DB=ny_taxi \
+  -e PGDATA=/var/lib/postgresql/data/pgdata \
+  -v ./data:/var/lib/postgresql/data \
+  postgres
